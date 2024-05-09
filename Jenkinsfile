@@ -7,24 +7,24 @@ pipeline {
              }
              post {
                  always {
-                     jiraSendBuildInfo site: 'jira-emcode.atlassian.net', branch: 'EM-2'
+                     jiraSendBuildInfo site: 'XXXXXXXX', branch: 'EM-2'
                  }
              }
          }
          stage('Deploy - Staging') {
              steps {                 
-                 jiraSendDeploymentInfo ( site: 'jira-emcode.atlassian.net', environmentId: 'STG', environmentName: 'stg', environmentType: 'staging', state: 'in_progress')
+                 jiraSendDeploymentInfo ( site: 'XXXXX', environmentId: 'STG', environmentName: 'stg', environmentType: 'staging', state: 'in_progress')
                        sh 'echo Deploying to Staging started..'
                           withCredentials([file(credentialsId: 'BoxDrop-Credentials', variable: 'secretFile')]) {
                        // do something with the file, for instance 
                        sh 'sudo scp $secretFile .'
                        sh "sudo chmod +x -R ${env.WORKSPACE}"
                        sh 'sudo yarn build'
-                       sh "sudo scp -r /home/shahin/jenkins/workspace/frontend-test-purpose/* /var/www/html/ "
+                       sh "sudo scp -r * /var/www/html/ "
                        sh "sudo npm install -g pm2"
                        sh 'sudo yarn global add pm2'
                        sh 'sudo pm2 start yarn --name "dcc-webapp" -- start'
-                       sh 'sudo pm2 boxdrop-webapp'
+                       sh 'sudo pm2 box-app'
                               }       
              }
              post {
@@ -38,7 +38,7 @@ pipeline {
                 jiraSendDeploymentInfo (
                     environmentId: 'STG', 
                     environmentName: 'stg',  
-                    site: 'jira-emcode.atlassian.net', 
+                    site: 'XXXXXX', 
                     environmentType: 'staging',
                     state: 'successful'
                 )
@@ -49,7 +49,7 @@ pipeline {
                     environmentId: 'STG', 
                     environmentName: 'stg', 
                     environmentType: 'staging', 
-                    site: 'jira-emcode.atlassian.net', 
+                    site: 'XXXXXX', 
                     state: 'failed'
                 )
               }
@@ -59,7 +59,7 @@ pipeline {
                     environmentId: 'STG', 
                     environmentName: 'stg', 
                     environmentType: 'staging', 
-                    site: 'jira-emcode.atlassian.net', 
+                    site: 'XXXXXX', 
                     state: 'cancelled'
                 )
               }
